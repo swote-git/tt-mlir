@@ -15,6 +15,7 @@
 #include "ttmlir/Conversion/D2MToTTKernel/D2MToTTKernel.h"
 #include "ttmlir/Conversion/D2MToTTMetal/D2MToTTMetal.h"
 #include "ttmlir/Conversion/D2MToTTNN/D2MToTTNN.h"
+#include "ttmlir/Conversion/LinalgToD2M/LinalgToD2M.h"
 #include "ttmlir/Conversion/MathToD2MTileOps/MathToD2MTileOps.h"
 #include "ttmlir/Conversion/SFPIToEmitC/SFPIToEmitC.h"
 #include "ttmlir/Conversion/TTIRToD2M/TTIRToD2M.h"

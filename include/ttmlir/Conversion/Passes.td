@@ -123,6 +123,43 @@ def TTIRToD2M: Pass<"ttir-to-d2m", "::mlir::ModuleOp"> {
   ];
 }
 
+def ConvertLinalgToD2M: Pass<"convert-linalg-to-d2m", "::mlir::ModuleOp"> {
+  let summary = "Convert linalg.generic operations to D2M generic form.";
+  let description = [{
+    This pass is the first linalg ingress into the D2M pipeline.  It lowers
+    supported tensor linalg.generic operations into the existing
+    d2m.generic/linalg.generic tile-compute nesting, inserting d2m.to_layout
+    boundaries around host tensor inputs and results.
+
+    The initial implementation supports all-parallel elementwise
+    linalg.generic operations with affine indexing maps whose domain matches
+    the iterator space.  Reduction, contraction and convolution patterns are
+    intentionally left for follow-up extensions.
+  }];
+  let dependentDialects = [
+    "mlir::arith::ArithDialect",
+    "mlir::func::FuncDialect",
+    "mlir::linalg::LinalgDialect",
+    "mlir::math::MathDialect",
+    "mlir::tensor::TensorDialect",
+    "mlir::tt::d2m::D2MDialect",
+    "mlir::tt::ttcore::TTCoreDialect"
+  ];
+  let constructor = "createConvertLinalgToD2MPass()";
+  let options = [
+      Option<"defaultInputMemSpace", "default-input-memspace", "ttcore::MemorySpace", /*default=*/"ttcore::MemorySpace::DeviceL1", "Set default memspace for input tensors",
+          [{::llvm::cl::values(
+            clEnumValN(ttcore::MemorySpace::DeviceL1, "l1", "L1"),
+            clEnumValN(ttcore::MemorySpace::DeviceDRAM, "dram", "DRAM")
+          )}]>,
+      Option<"defaultOutputMemSpace", "default-output-memspace", "ttcore::MemorySpace", /*default=*/"ttcore::MemorySpace::DeviceL1", "Set default memspace for output tensors",
+          [{::llvm::cl::values(
+            clEnumValN(ttcore::MemorySpace::DeviceL1, "l1", "L1"),
+            clEnumValN(ttcore::MemorySpace::DeviceDRAM, "dram", "DRAM")
+          )}]>
+  ];
+}
+
 def ArithToD2MTileOps : Pass<"arith-to-d2m-tile-ops", "::mlir::ModuleOp"> {
   let summary = "Convert Arith to D2M Tile ops dialect.";
   let description = [{

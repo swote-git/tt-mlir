@@ -57,6 +57,7 @@ set(ttmlir_export_targets
   TTMLIRTTIRToTTIRDecomposition
   TTMLIRD2MToTTNN
   TTMLIRTTIRToD2M
+  TTMLIRLinalgToD2M
   TTMLIRArithToD2MTileOps
   TTMLIRMathToD2MTileOps
   TTMLIRTTNNToEmitC
